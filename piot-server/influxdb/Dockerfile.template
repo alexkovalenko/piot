@@ -1,7 +1,9 @@
-FROM balenalib/%%BALENA_MACHINE_NAME%%-alpine
+FROM arm32v7/influxdb
 
-RUN apk add influxdb
+COPY influxdb.conf /etc/influxdb/influxdb.conf
+COPY entrypoint.sh /entrypoint.sh
+COPY init-influxdb.sh /init-influxdb.sh
 
-RUN sed -i 's|/var/lib/influxdb|/data/influxdb|g' /etc/influxdb.conf
+ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["influxd"]

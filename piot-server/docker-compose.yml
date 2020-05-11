@@ -1,43 +1,57 @@
 version: '2'
 volumes:
-  sense-data:
+  influxdb-data:
+  grafana-data:
 services:
   piot-server:
     build: .
-    restart: always
+    restart: on-failure
+    environment:
+      - MQTT_URL=tcp://mqtt:1883
+      - INFLUXDB_URL=http://influxdb:8086
     expose:
       - 8080
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - mqtt
+      - influxdb
 
   mqtt:
     image: arm32v6/eclipse-mosquitto
-    restart: always
+    container_name: mqtt
+    restart: on-failure
     expose:
-      - "1883"
-      - "9001"
+      - 1883
+      - 9001
     ports:
-      - "1883:1883"
-      - "9001:9001"
+      - 1883:1883
+      - 9001:9001
 
   influxdb:
-    restart: always
     build: ./influxdb
+    container_name: influxdb
+    restart: on-failure
+    environment:
+      - INFLUXDB_DB=piot
+      - INFLUXDB_USER=root
+      - INFLUXDB_USER_PASSWORD=root
+    ports:
+      - 8083:8083
+      - 8086:8086
     volumes:
-      - 'sense-data:/data'
+      - influxdb-data:/var/lib/influxdb
 
   grafana:
-    restart: always
     build: ./grafana
+    restart: on-failure
     ports:
-      - "80"
+      - 80
     volumes:
-      - 'sense-data:/data'
+      - grafana-data:/data
     environment:
-      - 'GF_SERVER_HTTP_PORT=80'
-      - 'GF_PATHS_PROVISIONING=/usr/src/app/provisioning'
-      - 'GF_SESSION_PROVIDER=memory'
+      - GF_SERVER_HTTP_PORT=80
+      - GF_PATHS_PROVISIONING=/usr/src/app/provisioning
+      - GF_SESSION_PROVIDER=memory
     depends_on:
       - influxdb

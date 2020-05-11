@@ -1,3 +1,12 @@
+spring:
+  influxdb:
+    url: ${INFLUXDB_URL:http://localhost:8086}
+    username: ${INFLUXDB_USER:root}
+    password: ${INFLUXDB_USER_PASSWORD:root}
+    database: ${INFLUXDB_DB:piot}
+    retention-policy: autogen
+
 mqtt:
-  serverURI: 'tcp://localhost:1883'
-  clientId: 'piot-server'
+  serverURL: ${MQTT_URL:tcp://localhost:1883}
+  clientId: ${MQTT_CLIENT_ID:piot-server}
+  topics: ${MQTT_TOPICS:piot/#}
