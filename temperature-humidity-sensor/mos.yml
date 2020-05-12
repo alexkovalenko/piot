@@ -1,0 +1,23 @@
+author: Alex Kovalenko
+description: DHT22 sensor
+version: 1.0
+manifest_version: 2017-05-18
+platforms: [ esp32 ]
+libs_version: ${mos.version}
+modules_version: ${mos.version}
+mongoose_os_version: ${mos.version}
+
+config_schema:
+  - ["i2c.enable", true]
+  - ["mqtt.enable", true]
+  - ["mqtt.server", "192.168.1.3:1883"]
+  - ["placement", "s", "room", {title: "Sensor placement"}]
+tags:
+  - js
+
+filesystem:
+  - fs
+
+libs:
+  - origin: https://github.com/mongoose-os-libs/boards
+  - origin: https://github.com/mongoose-os-libs/js-demo-bundle
